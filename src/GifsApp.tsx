@@ -1,40 +1,56 @@
-import { mockGifs } from "./mock-data/gifs.mock";
+import { useState } from "react";
+import { GifList } from "./gifs/components/GifList";
+import { PreviousSearches } from "./gifs/components/PreviousSearches";
+// import { mockGifs } from "./mock-data/gifs.mock";
+import { CustomHeader } from "./shared/components/CustomHeader";
+import { SearchBar } from "./shared/components/SearchBar";
+import { getGifsByQuery } from "./gifs/actions/getGifsByQuery.action";
+import { type Gif } from "./gifs/interfaces/gif.interface";
 
 export const GifsApp = () => {
+
+  const [previousTerms, setPreviousTerms] = useState<string[]>([]);
+  const [gifs, setGifs] = useState<Gif[]>([]);
+  
+  
+  const handleTermClicked = (term: string) => {
+    console.log({term});
+  };
+
+  const handleSearch = async(query: string = '') => {
+
+    query = query.trim().toLowerCase();
+
+    if( query.length === 0) return;
+
+    if( previousTerms.includes(query) ) return;
+    
+    setPreviousTerms( previousTerms => [query, ...previousTerms].splice(0,8));
+
+    const gifs = await getGifsByQuery(query);
+
+    setGifs(gifs);
+
+  };  
+
   return (
     <>
-      <div className="content-center">
-        <h1>Buscador de Gifs</h1>
-        <p>Descubre y comparte el gif perfecto</p>
-      </div>
+      <CustomHeader 
+        title="Buscador de Gifs"
+        description="Descubre y comparte el Gif perfecto"
+      />
 
-      <div className="search-container">
-        <input type="text" placeholder="Buscar Gifs" />
-        <button>Buscar</button>
-      </div>
+      <SearchBar 
+        placeHolder = "Busca lo que quieras"
+        onQuery={handleSearch}
+      />
 
-      <div className="previous-searches">
-        <h2>Búsquedas previas</h2>
-        <ul className="previous-searches-list">
-          <li>Goku</li>
-          <li>Saitama</li>
-          <li>Elden Ring</li>
-        </ul>
-      </div>
+      <PreviousSearches 
+        searches={previousTerms}
+        onLabelCliked={ handleTermClicked }
+      />
 
-      <div className="gifs-container">
-        {
-          mockGifs.map( (gif) => (
-            <div key={gif.id} className="gif-card">
-              <img src={gif.url} alt={gif.title} />
-              <h3>{gif.title}</h3>
-              <p>
-                {gif.width}x{gif.height} (1.5mb)
-              </p>
-            </div>
-          ))
-        }
-      </div>
+      <GifList gifs={gifs}/>
     </>
   );
 };
