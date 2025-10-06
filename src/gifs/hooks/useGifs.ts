@@ -3,20 +3,20 @@ import type { Gif } from "../interfaces/gif.interface";
 import { getGifsByQuery } from "../actions/getGifsByQuery.action";
 
 export const useGifs = () => {
-
   const [previousTerms, setPreviousTerms] = useState<string[]>([]);
   const [gifs, setGifs] = useState<Gif[]>([]);
 
   const gifsCache = useRef<Record<string, Gif[]>>({});
 
-  const handleTermClicked = async(term: string) => {
-    if( gifsCache.current[term] ){
+  const handleTermClicked = async (term: string) => {
+    if (gifsCache.current[term]) {
       setGifs(gifsCache.current[term]);
       return;
     }
- 
+
     const gifs = await getGifsByQuery(term);
     setGifs(gifs);
+    gifsCache.current[term] = gifs;
   };
 
   const handleSearch = async (query: string = "") => {
