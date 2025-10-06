@@ -1,9 +1,9 @@
 import axios from "axios";
 
 export const giphyAPi = axios.create({
-  baseURL: 'https://api.giphy.com/v1/gifs',
+  baseURL: "https://api.giphy.com/v1/gifs",
   params: {
-    lang: 'es',
+    lang: "es",
     api_key: import.meta.env.VITE_GIPHY_API_KEY,
   },
-})
+});
