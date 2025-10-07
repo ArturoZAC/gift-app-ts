@@ -1,13 +1,12 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
 
 interface Props {
-  placeHolder?: string
-  onQuery: (query: string) => void
+  placeHolder?: string;
+  onQuery: (query: string) => void;
 }
 
-export const SearchBar = ({ placeHolder = 'Buscar', onQuery }: Props) => {
-
-  const [query, setQuery] = useState('');
+export const SearchBar = ({ placeHolder = "Buscar", onQuery }: Props) => {
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -16,31 +15,30 @@ export const SearchBar = ({ placeHolder = 'Buscar', onQuery }: Props) => {
 
     return () => {
       clearTimeout(timeoutId);
-    }
-  }, [ query, onQuery ]);
-  
-   
+    };
+  }, [query, onQuery]);
+
   const handleSearch = () => {
     onQuery(query);
     // setQuery('');
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if ( event.key === 'Enter'){
+    if (event.key === "Enter") {
       handleSearch();
     }
   };
-  
+
   return (
     <div className="search-container">
-      <input 
-        type="text" 
-        placeholder={ placeHolder } 
+      <input
+        type="text"
+        placeholder={placeHolder}
         value={query}
-        onChange={ (event) => setQuery(event.target.value)}
+        onChange={(event) => setQuery(event.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <button onClick={ handleSearch }>Buscar</button>
+      <button onClick={handleSearch}>Buscar</button>
     </div>
-  )
+  );
 };
